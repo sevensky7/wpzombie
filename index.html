@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<!-- Character encoding-->
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+      
+		<meta name="HandheldFriendly" content="true" />
+		<!-- <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">   /-->
+		
+		 <!-- Apple-product friendly meta tags -->
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <title>No Candy For My Zombie</title>
+        
+		<!-- External libraries referencing, these files have not developed by me-->
+        <script src="js/jquery-1.6.4.min.js"></script> <!-- jQuery-->
+        <script src="js/jquery.mobile-1.2.0.min.js"></script> <!-- jQuery Mobile -->
+		<link rel="stylesheet" href="css/jquery.mobile-1.2.0.min.css" />  <!-- jQuery Mobile unthemed stylesheet-->
+		<script src="js/jcanvas.min.js"></script> <!-- jCanvas jQuery plugin -->
+		<script src='http://connect.facebook.net/en_US/all.js'></script> <!-- Facebook library -->
+	
+		
+		
+		<!-- Referencing the projects style sheet -->
+        <link rel="stylesheet" href="css/stylesheet.css"/>
+	
+		
+	
+	
+
+ 
+ 
+ 
+        
+    
+    </head>
+	
+    <body> <!--Whole game interface structure contained within the body-->
+	
+      <div data-role="page" id="home" class="welcome_screen" >
+	  <!--Actual zombies-->
+			<div id="zombie"></div>
+		
+         <!--Welcome Screen-->
+        <div data-role="content">
+		
+			<div class="logotype"></div>
+			
+			
+			  <!--About Button-->
+			   <a href="#newgame" data-role="button" data-transition="fade" class="button_newgame"></a>
+	 
+			  <!--New Game Button-->
+				<a href="#about" data-role="button" data-transition="fade"  class="button_about"></a>
+		  
+		
+			</div>
+      </div>
+
+      <!--About Screen-->
+      <div data-role="page" id="about" class="about_screen">
+        
+        <div data-role="content">
+
+		
+		  <!--Overlay 'Choose your zombie'-->
+            <div class="overlay_zombie"></div>
+      
+		  <!--Actual zombies-->
+			<div class="zombie_g" id="chooseZombie"></div>
+		
+	      <!--Left Button-->
+          <a href="#toggle" data-role="button" data-transition="fade" class="button_left" id="button_left"></a>
+		  
+		  <!--Right Button-->
+          <a href="#toggle" data-role="button" data-transition="fade" class="button_right" id="button_right"></a>
+		
+          <!--Tutorial Button-->
+          <a href="#tutorial" data-role="button" data-transition="fade" class="button_tutorial"></a>
+          
+          <!--Done Button-->
+          <a href="#home" data-role="button" data-transition="fade" class="button_done"></a>
+          
+        </div>
+      </div>
+	  
+	   <!--Tutorial Screen-->
+	   <div data-role="page" id="tutorial" class="tutorial_screen">
+        
+        <div data-role="content">
+          <!--Back Button-->
+          <a href="#about" data-role="button" data-transition="fade" id="button_back"></a>
+        </div>
+		
+      </div>
+
+      
+      <!--Main Gameplay Screen-->
+      <div data-role="page" id="newgame" class="gameplay_screen">
+
+        <div data-role="content">
+				 			
+					<!--Overlay shown when the game is paused, not yet started or lost-->
+					<div id="overlay_begin">
+						<!--Little canvas for displaying the highscore-->
+						 <canvas id="highscore" class="highscore"></canvas>
+						 
+						 <!--Overlay buttons-->
+						 <a href="#toggle" data-role="button" data-transition="fade" id="button_play"></a>
+						 <a href="#toggle" data-role="button" data-transition="fade" id="button_restart"></a>
+						 <a href="#home" data-role="button" data-transition="fade" id="button_exit"></a>
+						 
+		 				    <!--Facebook sharing functionality-->
+							<a id="button_share" onclick='postToFeed(); return false;' data-role="button"></a>
+							<p id='msg'></p>
+							
+							<script> 
+							//Call the Facebook ID to begin authentication
+							FB.init({appId: "348482245257820", status: true, cookie: true});
+
+							function postToFeed() {
+
+								// create the feed object story
+								var obj = {
+								  method: 'feed',
+								  redirect_uri: 'http://pgalor.com/close.html',
+								  picture: 'http://pgalor.com/test1.png',
+								  name: 'No Candy For My Zombie',
+								  caption: 'I have scored ' + localStorage.getItem(1) + ' points in the game!',
+								  description: 'Neat, isn\'t it?. Try and beat my score (for FREE).'
+								};
+								<!--Log callback in the console-->
+								function callback(response) {
+								  console.log( "Post ID: " + response['post_id']);
+								}
+								<!--The actual call-->
+								FB.ui(obj, callback);
+							  }
+							
+							</script>
+						 
+					</div>
+					
+					<!--The gameplay area of the screen. Script functionality is heavily related to the contents of this div, which is an equivalent DOM alternative of canvas-->			
+					<div id='area'>
+						<!--FPS counter-->	
+						<div id="fpsCounter"></div>
+						<!--Brain and mouth collision effect-->	
+						<div id="nom" class="nomnom"></div>
+						<!--Brain and left wall collision effect-->	
+						<div class="bump" id="bump"></div>
+						<!--Special brain and mouth collision effect-->	
+						<div id="wipeout" class="wipeout"></div>
+						<!--10 brains eaten in a row effect-->	
+						<div id="frenzy" class="frenzy"></div>
+						<!--Frenzy bar-->	
+						<div class="frenzyBar" id="frenzyBar"></div>
+						<!--Lifes-->	
+						<div class="x1" id="x1"></div>
+						<div class="x2" id="x2"></div>
+						<div class="x3" id="x3"></div>
+						<!--Small canvas for displaying the score while playing-->	
+						<canvas id="canvas"></canvas>
+						<!--Background and the animated, interactive gameplay character-->	
+						<div id='background' class="gameplay_screen">
+								<div id='level'>
+											<div id="zombie_dude" class="zombie_g"></div>
+											<div id="stats"></div>
+								</div>
+						</div>
+						<!--Gameplay pause button-->	
+						<div id="button_pause"></div>
+					</div>						
+
+
+							
+				</div>
+			</div>
+		
+      
+     <script type="text/javascript">
+	//Prevention of unnecessary default browser behaviour
+        $("body").fixedtoolbar({ tapToggle: false });
+		
+    </script>
+	<!--REFERENCING THE MAIN GAMEPLAY SCRIPT FILE, RESPONSIBLE FOR THE FUNCTIONALITY OF THE APPLICATION-->	
+    <script type="text/javascript" src="js/gameplay.js"></script>
+    </body>
+</html>
